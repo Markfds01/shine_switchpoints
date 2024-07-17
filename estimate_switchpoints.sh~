@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Clear results folder
+rm -f results/*
+
+# Run baseline switchpoint estimation
+declare -a array=("AN" "AR" "Belgium" "CL" "CM" "CT" "Czechia" "EX" "France" "GA" "Germany" "IB" "Israel" "Italy" "MC" "MD" "PV" "Spain" "Switzerland" "VC")
+
+for region in "${array[@]}"
+do
+    echo "Running 2 switchpoint estimation for $region"
+    python3 main.py -r $region -ns 2
+done
