@@ -1,6 +1,7 @@
 import pickle
 import pymc as pm
 import arviz as az
+import numpy as np
 
 from model_weekly import weekly_switchpoints_model
 from plots import plot_daily_pH_training, plot_daily_switchpoints, plot_weekly_switchpoints
@@ -9,10 +10,10 @@ from model_daily import daily_admissions_model, daily_switchpoints_model
 
 
 def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
-                      burn=2000, draws=5000, n_chains=4, verbose=False):
-    print('HE ENTRADO AL PROGRAMA')
+                      burn=4000, draws=5000, n_chains=4, verbose=False):
+    
     cases, hospitalized = load_data(region, start_date, end_date)
-    print('\n HE CARGADO LOS DATOS')
+    
 
     with daily_admissions_model(cases, hospitalized) as model:
          # Sample from the posterior
@@ -48,25 +49,31 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
                                 verbose=False, n_switchpoints=1):
     if region == 'Italy':
         start_date = '2020-09-01'
-
+    print('HE ENTRADO AL PROGRAMA')
     cases, hospitalized = load_data(region, start_date, end_date)
-
+    print('\n HE CARGADO LOS DATOS')
+    dict_init_values = {
+        'switchpoint' : np.array(np.linspace(350, 550, n_switchpoints)),
+        'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
+        'sigma' : None,
+        'admissions' : None
+    }
     with daily_switchpoints_model(cases, hospitalized, admissions_lambda, n_switchpoints) as model:
+        
         idata = pm.sample(draws=draws, tune=burn, chains=n_chains,
-                          idata_kwargs={"log_likelihood": True})
-        pm.sample_posterior_predictive(idata, extend_inferencedata=True)
+                          return_inferencedata=True, target_accept=0.99, idata_kwargs={"log_likelihood": True},initvals=dict_init_values)
+        idata.extend(pm.sample_posterior_predictive(idata))
 
         if verbose:
             az.summary(idata)
             az.plot_trace(idata)
 
             data = {
-                'admissions': idata.posterior['posterior_predictive']
-                .stack(sample=('chain', 'draw'))['admissions'].to_numpy(),
-                'hospitalized': idata.posterior['observed_data']['admissions'].to_numpy()
+                'admissions': idata.posterior_predictive['admissions'].stack(sample=('chain', 'draw')).to_numpy(),
+                'hospitalized': idata.observed_data['admissions'].to_numpy()
             }
 
-            plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints)
+            plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region)
 
     with open(f'results/switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
         pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)

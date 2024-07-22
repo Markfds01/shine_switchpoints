@@ -10,8 +10,8 @@ if __name__ == "__main__":
         # Hospitalization
         pH, admissions_lambda = train_daily_model(args.region, verbose=True)
         print(f' pH es {pH}, admissions_lambda es {admissions_lambda}\n')
-        #estimate_daily_switchpoints(region=args.region, admissions_lambda=admissions_lambda,
-                                    #n_switchpoints=args.n_switchpoints)
+        estimate_daily_switchpoints(region=args.region, admissions_lambda=admissions_lambda,
+                                    n_switchpoints=args.n_switchpoints,verbose=True)
     else:
         # Deaths
         pD, deaths_lambda = train_deaths_model(args.region)
