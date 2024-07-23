@@ -16,7 +16,6 @@ cffi==1.15.0
 chardet==4.0.0
 click==8.0.3
 cloudpickle==3.0.0
--e git+ssh://git@github.com/aaleta/CoarseNet.git@6ca6977c2460e9888d270420ecd9ed16c2685083#egg=CoarseNet
 colorama==0.4.4
 command-not-found==0.3
 cons==0.4.6

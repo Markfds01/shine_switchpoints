@@ -2,6 +2,8 @@ import pickle
 import pymc as pm
 import arviz as az
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 from model_weekly import weekly_switchpoints_model
 from plots import plot_daily_pH_training, plot_daily_switchpoints, plot_weekly_switchpoints
@@ -66,7 +68,9 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
 
         if verbose:
             az.summary(idata)
-            az.plot_trace(idata)
+            fig, axs = az.plot_trace(idata)
+            plt.savefig('plots/trace_plot.png')
+            plt.close(fig)  # Close the figure to free up memory
 
             data = {
                 'admissions': idata.posterior_predictive['admissions'].stack(sample=('chain', 'draw')).to_numpy(),
