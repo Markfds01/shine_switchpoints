@@ -8,11 +8,11 @@ def load_data(region, start_date, end_date, aggregate_week=False, deaths=False):
     end_date = pd.to_datetime(end_date)
 
     if len(region) == 2 or region == 'Spain': # Spanish provinces
-        cases, hospitalized = load_spanish(region, start_date, end_date, aggregate_week, deaths)
+        cases_per_age, hospitalized = load_spanish(region, start_date, end_date, aggregate_week, deaths)
     else: # European countries
-        cases, hospitalized = load_owid(region, start_date, end_date,  aggregate_week, deaths)
+        cases_per_age, hospitalized = load_owid(region, start_date, end_date,  aggregate_week, deaths)
 
-    return cases, hospitalized
+    return cases_per_age, hospitalized
 
 
 def load_spanish(region, start_date, end_date, aggregate_week, deaths):
@@ -30,20 +30,20 @@ def load_spanish(region, start_date, end_date, aggregate_week, deaths):
     data = pd.read_csv('data/casos_hosp_uci_def_sexo_edad_provres.csv')
     data = data[data.provincia_iso.isin(provinces)]
     data['fecha'] = pd.to_datetime(data['fecha'])
-    data = data.groupby('fecha').sum(['num_casos', 'num_hosp', 'num_def'])
+    data = data.groupby(['fecha','grupo_edad']).sum(['num_casos', 'num_hosp', 'num_def'])
 
     # Extract values
     data = data.loc[start_date:end_date]
     if aggregate_week:
         data = data.groupby(pd.Grouper(freq='W-MON'))[['num_casos', 'num_hosp', 'num_def']].sum()
-
-    cases = data['num_casos']
+    data = data.reset_index()
+    cases_per_age = data[['num_casos', 'grupo_edad']]
     if not deaths:
-        pred = data['num_hosp']
+        pred = data[['num_hosp','grupo_edad']]
     else:
-        pred = data['num_def']
+        pred = data[['num_def','grupo_edad']]
 
-    return cases, pred
+    return cases_per_age, pred
 
 
 def load_ecdc(region, start_date, end_date, aggregate_week, deaths):

@@ -3,7 +3,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 
-def plot_daily_pH_training(data, start_date, end_date,region = None):
+def plot_daily_pH_training(data, start_date, end_date,region = None,edad = None):
     posterior_quantile = np.percentile(data['admissions'], [2.5, 25, 50, 75, 97.5], axis=1)
     dates = pd.date_range(start_date, end_date).strftime('%m-%d')
     plot_dates = [dates[i] for i in range(0, len(posterior_quantile[2, :]), 21)]
@@ -32,10 +32,10 @@ def plot_daily_pH_training(data, start_date, end_date,region = None):
     fontsize = 'medium'
     plt.legend(loc='upper left', fontsize=fontsize)
 
-    plt.savefig(f'plots/fit_{region}.png')
+    plt.savefig(f'plots/fit_{region}_{edad}.png')
 
 
-def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,region = None):
+def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints, region = None, edad = None):
     print('\n Im plotting switchpoints')
     posterior_quantile = np.percentile(data['admissions'], [2.5, 25, 50, 75, 97.5], axis=1)
 
@@ -79,7 +79,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
 
     fontsize = 'medium'
     plt.legend(loc='upper left', fontsize=fontsize)
-    plt.savefig(f'plots/fit_{region}_switchpoints_new.png')
+    plt.savefig(f'plots/fit_{region}_switchpoints_{edad}.png')
 
 
 
