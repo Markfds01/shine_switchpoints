@@ -58,8 +58,8 @@ def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_sw
         points = np.arange(0, len(cases))
         switchpoints = pm.Uniform('switchpoint', lower=30, upper=len(points), shape=(n_switchpoints,),
                                   transform=pm.distributions.transforms.Ordered())
-        rates = pm.Gamma('rate', alpha=7.5, beta=1.0, shape=(n_switchpoints+1,))
-                         #transform=pm.distributions.transforms.Ordered())
+        rates = pm.Gamma('rate', alpha=7.5, beta=1.0, shape=(n_switchpoints+1,),
+                          transform=pm.distributions.transforms.Ordered())
         #pm.Uniform('rate', lower=0, upper=1, shape=(n_switchpoints+1,))
 
         rate = build_switch()

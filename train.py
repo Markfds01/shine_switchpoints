@@ -47,7 +47,7 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
 
 
 def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-01',
-                                end_date='2022-03-27', burn=2000, draws=5000, n_chains=4,
+                                end_date='2022-03-27', burn=4000, draws=5000, n_chains=4,
                                 verbose=False, n_switchpoints=1):
     if region == 'Italy':
         start_date = '2020-09-01'
@@ -68,9 +68,8 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
 
         if verbose:
             az.summary(idata)
-            fig, axs = az.plot_trace(idata)
-            plt.savefig('plots/trace_plot.png')
-            plt.close(fig)  # Close the figure to free up memory
+            fig = az.plot_trace(idata)
+            plt.savefig(f'plots/trace_plot_{region}.png')
 
             data = {
                 'admissions': idata.posterior_predictive['admissions'].stack(sample=('chain', 'draw')).to_numpy(),
