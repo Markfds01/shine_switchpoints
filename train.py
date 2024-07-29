@@ -120,7 +120,7 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
 
             pH = float(idata.posterior.rates.stack(sample=('chain', 'draw')).to_numpy())
             switchpoints = float(idata.posterior.switchpoints.stack(sample=('chain', 'draw')).to_numpy())
-            ph_data.append({'Edad': edad, 'pH': pH, 'admissions_lambda' : switchpoints})
+            ph_data.append({'Edad': edad, 'pH': pH, 'switchpoints' : switchpoints})
 
 
             """ with open(f'results/switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
