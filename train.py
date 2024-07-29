@@ -3,6 +3,7 @@ import pymc as pm
 import arviz as az
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 from model_weekly import weekly_switchpoints_model
@@ -18,6 +19,8 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
 
     pH = []
     admissions_lambda = []
+    ph_data = []
+
     for edad in cases_per_age['grupo_edad'].unique():
         if edad == 'NC':
             continue
@@ -25,8 +28,11 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
         print(f' edad es {edad}')
         cases_edad = cases_per_age[cases_per_age['grupo_edad']==edad]
         cases = cases_edad['num_casos']
+
         hospitalized_edad = hospitalized_per_age[hospitalized_per_age['grupo_edad']==edad]
         hospitalized = hospitalized_edad['num_hosp']
+        print(f' numero maximo de hospitalizados es {hospitalized.max()}')
+
         
 
         with daily_admissions_model(cases, hospitalized) as model:
@@ -52,12 +58,19 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
                 plot_daily_pH_training(data, start_date, end_date,region, edad)
 
         
-
-            pH.append(float(idata.posterior.pH.stack(sample=('chain', 'draw')).mean()))
-            admissions_lambda.append(float(idata.posterior.admissions_lambda.stack(sample=('chain', 'draw')).mean()))
+            mean_pH = float(idata.posterior.pH.stack(sample=('chain', 'draw')).mean())
+            mean_admission_lambda = float(idata.posterior.admissions_lambda.stack(sample=('chain', 'draw')).mean())
+            pH.append(mean_pH)
+            admissions_lambda.append(mean_admission_lambda)
             """with open(f'results/train_daily_{region}.pickle', 'wb') as file:
             pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)"""
-        
+            ph_data.append({'Edad': edad, 'pH': mean_pH, 'admissions_lambda' : mean_admission_lambda})
+
+    # Create a DataFrame from the list
+    ph_df = pd.DataFrame(ph_data)
+
+    # Write the DataFrame to a CSV file
+    ph_df.to_csv('data/processed/train_data_CT.csv', index=False)
     return pH, admissions_lambda
 
 
@@ -75,6 +88,8 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
         'sigma' : None,
         'admissions' : None
     }
+    ph_data = []
+
     for i,edad in enumerate(cases_per_age['grupo_edad'].unique()):
         if edad == 'NC':
             continue
@@ -103,8 +118,18 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
 
                 plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, edad)
 
+            pH = float(idata.posterior.rates.stack(sample=('chain', 'draw')).to_numpy())
+            switchpoints = float(idata.posterior.switchpoints.stack(sample=('chain', 'draw')).to_numpy())
+            ph_data.append({'Edad': edad, 'pH': pH, 'admissions_lambda' : switchpoints})
+
+
             """ with open(f'results/switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
             pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)"""
+        # Create a DataFrame from the list
+    ph_df = pd.DataFrame(ph_data)
+
+    # Write the DataFrame to a CSV file
+    ph_df.to_csv('data/processed/estimate_daily_switchpoints_CT.csv', index=False)
 
 
 def estimate_weekly_switchpoints(region, start_date='2020-07-01', end_date='2022-03-27',
