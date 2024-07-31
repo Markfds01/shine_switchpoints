@@ -62,8 +62,8 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
             mean_admission_lambda = float(idata.posterior.admissions_lambda.stack(sample=('chain', 'draw')).mean())
             pH.append(mean_pH)
             admissions_lambda.append(mean_admission_lambda)
-            """with open(f'results/train_daily_{region}.pickle', 'wb') as file:
-            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)"""
+            with open(f'results/train_daily_{region}_{edad}.pickle', 'wb') as file:
+                pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
             ph_data.append({'Edad': edad, 'pH': mean_pH, 'admissions_lambda' : mean_admission_lambda})
 
     # Create a DataFrame from the list
@@ -123,8 +123,8 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
             ph_data.append({'Edad': edad, 'pH': pH, 'switchpoints' : switchpoints})
 
 
-            """ with open(f'results/switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
-            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)"""
+            with open(f'results/switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
+                pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
         # Create a DataFrame from the list
     ph_df = pd.DataFrame(ph_data)
 
