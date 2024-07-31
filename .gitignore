@@ -161,10 +161,10 @@ cython_debug/
 
 # Custom
 noteboks/.ipynb_checkpoints/
-results/
 plots/
 data/
 notebooks/
 plots_berenjena/
 plots_berenjena_n1/
 plots_berenjena_n3/
+results/
