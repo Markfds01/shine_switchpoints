@@ -8,7 +8,7 @@ def plot_daily_pH_training(data, start_date, end_date,region = None,edad = None)
     dates = pd.date_range(start_date, end_date).strftime('%m-%d')
     plot_dates = [dates[i] for i in range(0, len(posterior_quantile[2, :]), 21)]
 
-    plt.figure()
+    plt.figure(figsize=(10, 8))  # 10 inches wide by 6 inches tall
     plt.plot(
         dates, posterior_quantile[2, :],
         color='b', label='posterior median', lw=2
