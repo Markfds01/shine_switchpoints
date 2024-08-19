@@ -73,7 +73,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
             color="C1",
         )
 
-    plt.xticks(plot_dates)
+    plt.xticks(plot_dates, rotation = 45)
     plt.ylabel('Daily number of admissions', fontsize='large')
     plt.xlabel('Day', fontsize='large')
 
