@@ -30,7 +30,6 @@ def load_spanish(region, start_date, end_date, aggregate_week, deaths):
     data = pd.read_csv('data/casos_hosp_uci_def_sexo_edad_provres.csv')
     data = data[data.provincia_iso.isin(provinces)]
     data['fecha'] = pd.to_datetime(data['fecha'])
-    print(data['fecha'])
     data = data.groupby(['fecha','grupo_edad']).sum(['num_casos', 'num_hosp', 'num_def'])
 
     # Extract values
