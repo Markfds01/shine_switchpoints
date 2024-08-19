@@ -16,30 +16,23 @@ def load_data(region, start_date, end_date, aggregate_week=False, deaths=False):
 
 
 def load_spanish(region, start_date, end_date, aggregate_week, deaths):
-    # Subset provinces
-    provinces = pd.read_csv('data/provinces_iso.csv')
-    if region == 'Spain':
-        provinces = provinces['province_iso']
-    else:
-        if region not in provinces['ccaa_iso'].values:
-            raise Exception('region not found')
 
-        provinces = provinces.loc[provinces['ccaa_iso'] == region]['province_iso']
 
     # Load data
-    data = pd.read_csv('data/casos_hosp_uci_def_sexo_edad_provres.csv')
-    data = data[data.provincia_iso.isin(provinces)]
-    data['fecha'] = pd.to_datetime(data['fecha'])
-    data = data.groupby(['fecha','grupo_edad']).sum(['num_casos', 'num_hosp', 'num_def'])
+    data = pd.read_csv('data/dades_covid_2022.csv')
+    data['DATA'] = pd.to_datetime(data['DATA'])
+    data = data[(data['DATA'] >= start_date) & (data['DATA'] <= end_date)]    
+
+    data = data.groupby(['DATA','GRUP_EDAT']).sum(['CASOS_CONFIRMAT', 'INGRESSOS_CRITIC'])
 
     # Extract values
-    data = data.loc[start_date:end_date]
     if aggregate_week:
         data = data.groupby(pd.Grouper(freq='W-MON'))[['num_casos', 'num_hosp', 'num_def']].sum()
     data = data.reset_index()
-    cases_per_age = data[['num_casos', 'grupo_edad']]
+    cases_per_age = data[['CASOS_CONFIRMAT', 'GRUP_EDAT']] 
+
     if not deaths:
-        pred = data[['num_hosp','grupo_edad']]
+        pred = data[['INGRESSOS_CRITIC','GRUP_EDAT']]
     else:
         pred = data[['num_def','grupo_edad']]
 

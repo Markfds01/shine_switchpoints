@@ -21,16 +21,16 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
     admissions_lambda = []
     ph_data = []
 
-    for edad in cases_per_age['grupo_edad'].unique():
+    for edad in cases_per_age['GRUP_EDAT'].unique():
         if edad == 'NC':
             continue
     
         print(f' edad es {edad}')
-        cases_edad = cases_per_age[cases_per_age['grupo_edad']==edad]
-        cases = cases_edad['num_casos']
+        cases_edad = cases_per_age[cases_per_age['GRUP_EDAT']==edad]
+        cases = cases_edad['CASOS_CONFIRMAT']
 
-        hospitalized_edad = hospitalized_per_age[hospitalized_per_age['grupo_edad']==edad]
-        hospitalized = hospitalized_edad['num_hosp']
+        hospitalized_edad = hospitalized_per_age[hospitalized_per_age['GRUP_EDAT']==edad]
+        hospitalized = hospitalized_edad['INGRESSOS_CRITIC']
         print(f' numero maximo de hospitalizados es {hospitalized.max()}')
 
         
@@ -89,15 +89,15 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
     }
     ph_data = []
 
-    for i,edad in enumerate(cases_per_age['grupo_edad'].unique()):
+    for i,edad in enumerate(cases_per_age['GRUP_EDAT'].unique()):
         if edad == 'NC':
             continue
         admissions_lambda = admissions_lambda_array[i]
         print(f' edad es {edad}')
-        cases_edad = cases_per_age[cases_per_age['grupo_edad']==edad]
-        cases = cases_edad['num_casos']
-        hospitalized_edad = hospitalized_per_age[hospitalized_per_age['grupo_edad']==edad]
-        hospitalized = hospitalized_edad['num_hosp']
+        cases_edad = cases_per_age[cases_per_age['GRUP_EDAT']==edad]
+        cases = cases_edad['CASOS_CONFIRMAT']
+        hospitalized_edad = hospitalized_per_age[hospitalized_per_age['GRUP_EDAT']==edad]
+        hospitalized = hospitalized_edad['INGRESSOS_CRITIC']
 
         with daily_switchpoints_model(cases, hospitalized, admissions_lambda, n_switchpoints) as model:
             
