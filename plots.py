@@ -40,7 +40,11 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints, r
     posterior_quantile = np.percentile(data['admissions'], [2.5, 25, 50, 75, 97.5], axis=1)
 
     dates = pd.date_range(start_date, end_date).strftime('%y-%m-%d')
+    print(dates)
     plot_dates = [dates[i] for i in range(0, len(posterior_quantile[2, :]), 21)]
+
+    first_days_of_month = pd.date_range(start_date, end_date, freq='MS').strftime('%Y-%m-%d')
+    #plot_dates = [date for date in dates if date in first_days_of_month]
 
     plt.figure()
     # Data
@@ -73,7 +77,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints, r
             color="C1",
         )
 
-    plt.xticks(plot_dates)
+    plt.xticks(plot_dates,rotation = 45)
     plt.ylabel('Daily number of admissions', fontsize='large')
     plt.xlabel('Day', fontsize='large')
 
