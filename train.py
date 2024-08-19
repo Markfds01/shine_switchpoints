@@ -83,7 +83,6 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
     cases_per_age, hospitalized_per_age = load_data(region, start_date, end_date)
     print('\n HE CARGADO LOS DATOS')
     dict_init_values = {
-        'switchpoint' : np.array(np.linspace(350, 550, n_switchpoints)),
         'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
         'sigma' : None,
         'admissions' : None
@@ -118,18 +117,11 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
 
                 plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, edad)
 
-            pH = idata.posterior.rate.stack(sample=('chain', 'draw')).to_numpy()
-            switchpoints = idata.posterior.switchpoint.stack(sample=('chain', 'draw')).to_numpy()
-            ph_data.append({'Edad': edad, 'pH': pH, 'switchpoints' : switchpoints})
 
-
-            with open(f'results/switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
+            with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
                 pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
         # Create a DataFrame from the list
-    ph_df = pd.DataFrame(ph_data)
 
-    # Write the DataFrame to a CSV file
-    ph_df.to_csv('data/processed/estimate_daily_switchpoints_CT.csv', index=False)
 
 
 def estimate_weekly_switchpoints(region, start_date='2020-07-01', end_date='2022-03-27',
