@@ -44,7 +44,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
     dates = pd.date_range(start_date, end_date).strftime('%y-%m-%d')
     plot_dates = [dates[i] for i in range(0, len(posterior_quantile[2, :]), 21)]
 
-    plt.figure()
+    plt.figure(figsize=(10, 8))
     # Data
     plt.plot(
         dates, posterior_quantile[2, :],
@@ -82,10 +82,6 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
     plt.text(text_x_position, posterior_quantile[4, :].max(), wave_labels[len(switchpoints)], 
              horizontalalignment='center', verticalalignment='bottom', fontsize=12, color='black',fontweight = 'bold')
 
-        
-
-
-
     plt.xticks(plot_dates, rotation = 45)
     plt.ylabel('Daily number of admissions', fontsize='large',fontweight = 'bold')
     plt.xlabel('Day', fontsize='large',fontweight = 'bold')
@@ -99,7 +95,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
         label.set_fontweight('bold')
     for label in plt.gca().get_yticklabels():
         label.set_fontweight('bold')
-    plt.savefig(f'plots/fit_{region}_switchpoints_new.png')
+    plt.savefig(f'plots/fit_{region}_fixed_switchpoints_dades.png')
 
 
 
