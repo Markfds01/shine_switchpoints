@@ -88,7 +88,12 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints, r
     plt.xticks(plot_dates, rotation = 45)
     plt.ylabel('Daily number of admissions', fontsize='large')
     plt.xlabel('Day', fontsize='large')
-
+    for spine in plt.gca().spines.values():
+        spine.set_linewidth(2)  # Adjust the width for desired boldness
+    for label in plt.gca().get_xticklabels():
+        label.set_fontweight('bold')
+    for label in plt.gca().get_yticklabels():
+        label.set_fontweight('bold')
     fontsize = 'medium'
     plt.legend(loc='upper left', fontsize=fontsize)
     plt.savefig(f'plots/fit_{region}_fixed_switchpoints_{edad}.png')

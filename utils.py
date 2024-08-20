@@ -23,7 +23,7 @@ def load_spanish(region, start_date, end_date, aggregate_week, deaths):
     data['DATA'] = pd.to_datetime(data['DATA'])
     data = data[(data['DATA'] >= start_date) & (data['DATA'] <= end_date)]    
 
-    data = data.groupby(['DATA','GRUP_EDAT']).sum(['CASOS_CONFIRMAT', 'INGRESSOS_CRITIC'])
+    data = data.groupby(['DATA','GRUP_EDAT']).sum(['CASOS_CONFIRMAT', 'INGRESSOS_TOTAL'])
 
     # Extract values
     if aggregate_week:
@@ -32,7 +32,7 @@ def load_spanish(region, start_date, end_date, aggregate_week, deaths):
     cases_per_age = data[['CASOS_CONFIRMAT', 'GRUP_EDAT']] 
 
     if not deaths:
-        pred = data[['INGRESSOS_CRITIC','GRUP_EDAT']]
+        pred = data[['INGRESSOS_TOTAL','GRUP_EDAT']]
     else:
         pred = data[['num_def','grupo_edad']]
 

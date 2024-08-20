@@ -30,7 +30,7 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
         cases = cases_edad['CASOS_CONFIRMAT']
 
         hospitalized_edad = hospitalized_per_age[hospitalized_per_age['GRUP_EDAT']==edad]
-        hospitalized = hospitalized_edad['INGRESSOS_CRITIC']
+        hospitalized = hospitalized_edad['INGRESSOS_TOTAL']
         print(f' numero maximo de hospitalizados es {hospitalized.max()}')
 
         
@@ -97,7 +97,7 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
         cases_edad = cases_per_age[cases_per_age['GRUP_EDAT']==edad]
         cases = cases_edad['CASOS_CONFIRMAT']
         hospitalized_edad = hospitalized_per_age[hospitalized_per_age['GRUP_EDAT']==edad]
-        hospitalized = hospitalized_edad['INGRESSOS_CRITIC']
+        hospitalized = hospitalized_edad['INGRESSOS_TOTAL']
 
         with daily_switchpoints_model(cases, hospitalized, admissions_lambda, n_switchpoints) as model:
             
