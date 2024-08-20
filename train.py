@@ -87,7 +87,6 @@ def estimate_daily_switchpoints(region, admissions_lambda_array, start_date='202
         'sigma' : None,
         'admissions' : None
     }
-    ph_data = []
 
     for i,edad in enumerate(cases_per_age['grupo_edad'].unique()):
         if edad == 'NC':

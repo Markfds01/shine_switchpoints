@@ -48,7 +48,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints, r
     # Data
     plt.plot(
         dates, posterior_quantile[2, :],
-        color='#448FA3', label='posterior median', lw=3
+        color='#448FA3', label='posterior median', lw=4
     )
 
     plt.fill_between(
@@ -58,7 +58,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints, r
 
     plt.plot(
         dates, data['hospitalized'], '.', color = '#02182B',
-        alpha=0.6, markersize=4, label='Observed admissions')
+        alpha=0.6, markersize=5, label='Observed admissions')
 
     # Switchpoints with CI
     switchpoints = np.array([164, 257, 354])  # Fixed switchpoints
@@ -87,8 +87,8 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints, r
 
 
     plt.xticks(plot_dates, rotation = 45)
-    plt.ylabel('Daily number of admissions', fontsize='large')
-    plt.xlabel('Day', fontsize='large')
+    plt.ylabel('Daily number of admissions', fontsize='large',fontweight = 'bold')
+    plt.xlabel('Day', fontsize='large',fontweight = 'bold')
 
     fontsize = 'medium'
     plt.legend(loc='upper left', fontsize=fontsize)
