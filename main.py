@@ -9,9 +9,9 @@ if __name__ == "__main__":
 
     if not args.deaths:
         if args.ages:
-            pH_array, admissions_lambda_array = train_daily_model_ages(args.region, verbose=True)
-            print(f' pH es {pH_array}, admissions_lambda es {admissions_lambda_array}\n')
-            estimate_daily_switchpoints_ages(region=args.region, admissions_lambda_array=admissions_lambda_array,
+            pH_array, admissions_lambda_dict = train_daily_model_ages(args.region, verbose=True)
+            print(f' pH es {pH_array}, admissions_lambda es {admissions_lambda_dict}\n')
+            estimate_daily_switchpoints_ages(region=args.region, admissions_lambda_dict=admissions_lambda_dict,
                                         n_switchpoints=args.n_switchpoints,verbose=True)
         # Hospitalization
         else:
