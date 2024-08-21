@@ -17,6 +17,10 @@ def load_data(region, start_date, end_date, aggregate_week=False, deaths=False):
 
 def load_spanish(region, start_date, end_date, aggregate_week, deaths):
     # Subset provinces
+    if region == 'CT':
+        cases, pred = load_CT(start_date, end_date, aggregate_week, deaths)
+        return cases, pred
+
     provinces = pd.read_csv('data/provinces_iso.csv')
     if region == 'Spain':
         provinces = provinces['province_iso']
@@ -119,3 +123,21 @@ def load_owid(region, start_date, end_date, aggregate_week, deaths):
 
     return cases, hospitalization
 
+def load_CT(start_date, end_date, aggregate_week, deaths):
+    print("He entrado en load CT")
+    # Load data
+    data = pd.read_csv('data/dades_covid_2022.csv')
+    data['DATA'] = pd.to_datetime(data['DATA'])
+    data = data[(data['DATA'] >= start_date) & (data['DATA'] <= end_date)]
+    data = data.groupby('DATA').sum(['CASOS_CONFIRMAT', 'INGRESSOS_TOTAL'])
+
+    if aggregate_week:
+        data = data.groupby(pd.Grouper(freq='W-MON'))[['num_casos', 'num_hosp', 'num_def']].sum()
+
+    cases = data['CASOS_CONFIRMAT']
+    if not deaths:
+        pred = data['INGRESSOS_TOTAL']
+    else:
+        raise Exception("CT has not implemented deaths\n")
+
+    return cases, pred
