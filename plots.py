@@ -44,7 +44,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
     dates = pd.date_range(start_date, end_date).strftime('%y-%m-%d')
     plot_dates = [dates[i] for i in range(0, len(posterior_quantile[2, :]), 21)]
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(12, 10))
     # Data
     plt.plot(
         dates, posterior_quantile[2, :],
