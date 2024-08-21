@@ -18,7 +18,7 @@ def train_daily_model_ages(region, start_date='2020-06-29', end_date='2020-12-01
     cases_per_age, hospitalized_per_age = load_data_ages(region, start_date, end_date)
 
     pH = []
-    admissions_lambda = []
+    admissions_lambda = {}
 
     for edad in cases_per_age['grupo_edad'].unique():
         if edad == 'NC':
@@ -59,14 +59,14 @@ def train_daily_model_ages(region, start_date='2020-06-29', end_date='2020-12-01
             mean_pH = float(idata.posterior.pH.stack(sample=('chain', 'draw')).mean())
             mean_admission_lambda = float(idata.posterior.admissions_lambda.stack(sample=('chain', 'draw')).mean())
             pH.append(mean_pH)
-            admissions_lambda.append(mean_admission_lambda)
+            admissions_lambda[edad] = mean_admission_lambda
             with open(f'results/train_daily_{region}_{edad}.pickle', 'wb') as file:
                 pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
 
     return pH, admissions_lambda
 
 
-def estimate_daily_switchpoints_ages(region, admissions_lambda_array, start_date='2020-07-01',
+def estimate_daily_switchpoints_ages(region, admissions_lambda_dict, start_date='2020-07-01',
                                 end_date='2021-09-15', burn=4000, draws=5000, n_chains=4,
                                 verbose=False, n_switchpoints=1):
     if region == 'Italy':
@@ -83,7 +83,7 @@ def estimate_daily_switchpoints_ages(region, admissions_lambda_array, start_date
     for i,edad in enumerate(cases_per_age['grupo_edad'].unique()):
         if edad == 'NC':
             continue
-        admissions_lambda = admissions_lambda_array[i]
+        admissions_lambda = admissions_lambda_dict[edad]
         print(f' edad es {edad}')
         cases_edad = cases_per_age[cases_per_age['grupo_edad']==edad]
         cases = cases_edad['num_casos']
