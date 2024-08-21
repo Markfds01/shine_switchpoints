@@ -36,5 +36,13 @@ def parse_args(args=sys.argv[1:]):
         action=argparse.BooleanOptionalAction,
         help="Flag to indicate if estimate deaths instead of hospitalizations"
     )
+    parser.add_argument(
+        "-ag",
+        "--ages",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Flag to indicate if you want to predict by age groups"
+    )
+    
 
     return parser.parse_args(args)
