@@ -13,7 +13,7 @@
 #done
 
 # Run death estimation
-declare -a array_deaths=("CT" )
+declare -a array_deaths=("AN" "AR" "CL" "CM" "CT" "EX" "GA" "IB" "MC" "MD" "PV" "Spain" "VC")
 
 for region in "${array_deaths[@]}"
 do
