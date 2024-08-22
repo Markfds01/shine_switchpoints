@@ -48,18 +48,26 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
 
 def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-01',
                                 end_date='2021-09-15', burn=4000, draws=5000, n_chains=4,
-                                verbose=False, n_switchpoints=1):
+                                verbose=False, n_switchpoints=1, estimate_sw = False):
     if region == 'Italy':
         start_date = '2020-09-01'
     print('HE ENTRADO AL PROGRAMA')
     cases, hospitalized = load_data(region, start_date, end_date)
     print('\n HE CARGADO LOS DATOS')
-    dict_init_values = {
-        'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
-        'sigma' : None,
-        'admissions' : None
-    }
-    with daily_switchpoints_model(cases, hospitalized, admissions_lambda, n_switchpoints) as model:
+    if not estimate_sw:
+        dict_init_values = {
+            'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
+            'sigma' : None,
+            'admissions' : None
+        }
+    else:
+        dict_init_values = {
+            'switchpoint' : np.array(np.linspace(100, 400, n_switchpoints)),
+            'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
+            'sigma' : None,
+            'admissions' : None
+        }
+    with daily_switchpoints_model(cases, hospitalized, admissions_lambda, n_switchpoints, estimate_sw= estimate_sw) as model:
         
         idata = pm.sample(draws=draws, tune=burn, chains=n_chains,
                           return_inferencedata=True, target_accept=0.99, idata_kwargs={"log_likelihood": True},initvals=dict_init_values)
@@ -75,7 +83,7 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
                 'hospitalized': idata.observed_data['admissions'].to_numpy()
             }
 
-            plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region)
+            plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, estimate_sw)
 
     with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
         pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)

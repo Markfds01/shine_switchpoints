@@ -42,7 +42,7 @@ def cdf_exponential(x, lam):
     return cdf[1:] - cdf[:-1]
 
 
-def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_switchpoints):
+def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_switchpoints, estimate_sw = False):
 
     delay_matrix_0 = make_delay_matrix(len(cases), len(cases), 0)
 
@@ -56,9 +56,13 @@ def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_sw
             return value/100
 
         points = np.arange(0, len(cases))
-        switchpoints = np.array([164, 257, 354])  # Fixed switchpoints
-
-        n_switchpoints = len(switchpoints)
+        if not estimate_sw:
+            switchpoints = np.array([164, 257, 354])  # Fixed switchpoints
+            n_switchpoints = len(switchpoints)
+        else:
+            switchpoints = pm.Uniform('switchpoint', lower=30, upper=len(points), shape=(n_switchpoints,),
+                                  transform=pm.distributions.transforms.Ordered())
+            
         rates = pm.Gamma('rate', alpha=7.5, beta=1.0, shape=(n_switchpoints+1,),
                           transform=pm.distributions.transforms.Ordered())
         #pm.Uniform('rate', lower=0, upper=1, shape=(n_switchpoints+1,))

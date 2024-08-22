@@ -43,6 +43,13 @@ def parse_args(args=sys.argv[1:]):
         default=False,
         help="Flag to indicate if you want to predict by age groups"
     )
+    parser.add_argument(
+        "-sw",
+        "--switchpoints",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Flag to indicate if you want to predict switchpoints"
+    )
     
 
     return parser.parse_args(args)
