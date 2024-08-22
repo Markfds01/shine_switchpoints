@@ -83,7 +83,7 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
                 'hospitalized': idata.observed_data['admissions'].to_numpy()
             }
 
-            plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, estimate_sw)
+            plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, estimate_sw=estimate_sw)
 
     with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
         pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
