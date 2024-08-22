@@ -84,10 +84,12 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
             }
 
             plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, estimate_sw=estimate_sw)
-
-    with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
-        pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
-
+    if not estimate_sw:
+        with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
+            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+    else:
+        with open(f'results/non_fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
+            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 def estimate_weekly_switchpoints(region, start_date='2020-07-01', end_date='2022-03-27',
                                  burn=2000, draws=5000, n_chains=4, verbose=False,

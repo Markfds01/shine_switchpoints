@@ -72,17 +72,25 @@ def train_daily_model_ages(region, start_date='2020-06-29', end_date='2020-12-01
 
 def estimate_daily_switchpoints_ages(region, admissions_lambda_dict, start_date='2020-07-01',
                                 end_date='2021-09-15', burn=4000, draws=5000, n_chains=4,
-                                verbose=False, n_switchpoints=1):
+                                verbose=False, n_switchpoints=1, estimate_sw = False):
     if region == 'Italy':
         start_date = '2020-09-01'
     print('HE ENTRADO AL PROGRAMA')
     cases_per_age, hospitalized_per_age = load_data_ages(region, start_date, end_date)
     print('\n HE CARGADO LOS DATOS')
-    dict_init_values = {
-        'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
-        'sigma' : None,
-        'admissions' : None
-    }
+    if not estimate_sw:
+        dict_init_values = {
+            'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
+            'sigma' : None,
+            'admissions' : None
+        }
+    else:
+        dict_init_values = {
+            'switchpoint' : np.array(np.linspace(100, 400, n_switchpoints)),
+            'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
+            'sigma' : None,
+            'admissions' : None
+        }
 
     for i,edad in enumerate(cases_per_age['grupo_edad'].unique()):
         if edad == 'NC':
@@ -95,7 +103,7 @@ def estimate_daily_switchpoints_ages(region, admissions_lambda_dict, start_date=
             hospitalized_edad = hospitalized_per_age[hospitalized_per_age['grupo_edad']==edad]
             hospitalized = hospitalized_edad['num_hosp']
 
-            with daily_switchpoints_model(cases, hospitalized, admissions_lambda, n_switchpoints) as model:
+            with daily_switchpoints_model(cases, hospitalized, admissions_lambda, n_switchpoints, estimate_sw=estimate_sw) as model:
                 
                 idata = pm.sample(draws=draws, tune=burn, chains=n_chains,
                                 return_inferencedata=True, target_accept=0.99, idata_kwargs={"log_likelihood": True},initvals=dict_init_values)
@@ -111,11 +119,14 @@ def estimate_daily_switchpoints_ages(region, admissions_lambda_dict, start_date=
                         'hospitalized': idata.observed_data['admissions'].to_numpy()
                     }
 
-                    plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, edad)
+                    plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, edad, estimate_sw=estimate_sw)
 
-
-                with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
-                    pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+                if not estimate_sw:
+                    with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
+                        pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+                else:
+                    with open(f'results/non_fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
+                        pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
         except Exception as e:
             print(f'Error estimating switchpoints age {edad}: {e}')
             continue
