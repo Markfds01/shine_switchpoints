@@ -62,7 +62,7 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
         }
     else:
         dict_init_values = {
-            'switchpoint' : np.array(np.linspace(100, 400, n_switchpoints)),
+            'switchpoint' : np.array(np.linspace(100, 500, n_switchpoints)),
             'rate' : np.array(np.linspace(3, 10, n_switchpoints + 1)),
             'sigma' : None,
             'admissions' : None
