@@ -71,7 +71,7 @@ def train_daily_model_ages(region, start_date='2020-06-29', end_date='2020-12-01
 
 
 def estimate_daily_switchpoints_ages(region, admissions_lambda_dict, start_date='2020-07-01',
-                                end_date='2021-09-15', burn=4000, draws=5000, n_chains=4,
+                                end_date='2022-03-27', burn=4000, draws=5000, n_chains=4,
                                 verbose=False, n_switchpoints=1, estimate_sw = False):
     if region == 'Italy':
         start_date = '2020-09-01'
