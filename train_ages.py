@@ -122,11 +122,19 @@ def estimate_daily_switchpoints_ages(region, admissions_lambda_dict, start_date=
                     plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, edad, estimate_sw=estimate_sw, aggregate_week=aggregate_week)
 
                 if not estimate_sw:
-                    with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
-                        pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+                    if not aggregate_week:
+                        with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
+                            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+                    else:
+                        with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}_aw.pickle', 'wb') as file:
+                            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
                 else:
-                    with open(f'results/non_fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
-                        pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+                    if not aggregate_week:
+                        with open(f'results/non_fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}.pickle', 'wb') as file:
+                            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+                    else:
+                        with open(f'results/non_fixed_switchpoints_daily_{n_switchpoints}_{region}_{edad}_aw.pickle', 'wb') as file:
+                            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
         except Exception as e:
             print(f'Error estimating switchpoints age {edad}: {e}')
             continue

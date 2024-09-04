@@ -91,7 +91,7 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
             with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
                 pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
         else:
-            with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle_aw', 'wb') as file:
+            with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}_aw.pickle', 'wb') as file:
                 pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
     else:
         if not aggregate_week:
