@@ -133,7 +133,9 @@ def load_CT(start_date, end_date, aggregate_week, deaths):
     data = data.groupby('DATA').sum(['CASOS_CONFIRMAT', 'INGRESSOS_TOTAL'])
 
     if aggregate_week:
-        data = data.groupby(pd.Grouper(freq='W-MON'))[['num_casos', 'num_hosp', 'num_def']].sum()
+        data['CASOS_CONFIRMAT'] = data['CASOS_CONFIRMAT'].rolling(window=7, min_periods=1).mean()
+        data['INGRESSOS_TOTAL'] = data['INGRESSOS_TOTAL'].rolling(window=7, min_periods=1).mean()
+
 
     cases = data['CASOS_CONFIRMAT']
     if not deaths:

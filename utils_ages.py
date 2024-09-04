@@ -65,7 +65,8 @@ def load_CT_ages(start_date, end_date, aggregate_week, deaths):
 
     # Extract values
     if aggregate_week:
-        data = data.groupby(pd.Grouper(freq='W-MON'))[['num_casos', 'num_hosp', 'num_def']].sum()
+        data['num_casos'] = data['num_casos'].rolling(window=7, min_periods=1).mean()
+        data['num_hosp'] = data['num_hosp'].rolling(window=7, min_periods=1).mean()
     data = data.reset_index()
     cases_per_age = data[['num_casos', 'grupo_edad']] 
 
