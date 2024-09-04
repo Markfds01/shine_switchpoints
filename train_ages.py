@@ -54,7 +54,7 @@ def train_daily_model_ages(region, start_date='2020-06-29', end_date='2020-12-01
                     }
 
 
-                    plot_daily_pH_training(data, start_date, end_date,region, edad, aggregate_week=aggregate_week)
+                    plot_daily_pH_training(data, start_date, end_date,region, edad)
 
                 mean_pH = float(idata.posterior.pH.stack(sample=('chain', 'draw')).mean())
                 mean_admission_lambda = float(idata.posterior.admissions_lambda.stack(sample=('chain', 'draw')).mean())
