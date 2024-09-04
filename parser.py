@@ -50,6 +50,14 @@ def parse_args(args=sys.argv[1:]):
         default=False,
         help="Flag to indicate if you want to predict switchpoints"
     )
+    parser.add_argument(
+        "-aw",
+        "--weekly",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Flag to indicate if you want to do rolling average weekly"
+    )
+    
     
 
     return parser.parse_args(args)

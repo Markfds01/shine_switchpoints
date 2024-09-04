@@ -38,7 +38,7 @@ def plot_daily_pH_training(data, start_date, end_date,region = None, edad = None
 
 
 
-def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,region = None, edad = None, estimate_sw = False):
+def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,region = None, edad = None, estimate_sw = False, aggregate_week = False):
     print('\n Im plotting switchpoints')
     posterior_quantile = np.percentile(data['admissions'], [2.5, 25, 50, 75, 97.5], axis=1)
     wave_labels = ['Before 2º wave', '2º wave', '3º wave', '4º wave', '5º wave']
@@ -117,18 +117,34 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
         label.set_fontweight('bold')
     if not estimate_sw:
         if not edad:
-            plt.savefig(f'plots/fit_{region}_fixed_switchpoints.png')
-            plt.savefig(f'plots/fit_{region}_fixed_switchpoints.pdf')
+            if not aggregate_week:
+                plt.savefig(f'plots/fit_{region}_fixed_switchpoints.png')
+                plt.savefig(f'plots/fit_{region}_fixed_switchpoints.pdf')
+            else:
+                plt.savefig(f'plots/fit_{region}_fixed_switchpoints_aw.png')
+                plt.savefig(f'plots/fit_{region}_fixed_switchpoints_aw.pdf') 
         else:
-            plt.savefig(f'plots/fit_{region}_fixed_switchpoints_{edad}.png')
-            plt.savefig(f'plots/fit_{region}_fixed_switchpoints_{edad}.pdf')
+            if not aggregate_week:
+                plt.savefig(f'plots/fit_{region}_fixed_switchpoints_{edad}.png')
+                plt.savefig(f'plots/fit_{region}_fixed_switchpoints_{edad}.pdf')
+            else:
+                plt.savefig(f'plots/fit_{region}_fixed_switchpoints_{edad}_aw.png')
+                plt.savefig(f'plots/fit_{region}_fixed_switchpoints_{edad}_aw.pdf') 
     else:
         if not edad:
-            plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints.png')
-            plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints.pdf')
+            if not aggregate_week:
+                plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints.png')
+                plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints.pdf')
+            else:
+                plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints_aw.png')
+                plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints_aw.pdf')
         else:
-            plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints{edad}.png')
-            plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints{edad}.pdf')
+            if not aggregate_week:
+                plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints{edad}.png')
+                plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints{edad}.pdf')
+            else:
+                plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints{edad}_aw.png')
+                plt.savefig(f'plots/fit_{region}_non_fixed_switchpoints{edad}_aw.pdf')
 
 
 

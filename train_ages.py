@@ -13,9 +13,9 @@ from model_daily import daily_admissions_model, daily_switchpoints_model
 
 
 def train_daily_model_ages(region, start_date='2020-06-29', end_date='2020-12-01',
-                      burn=4000, draws=5000, n_chains=4, verbose=False):
+                      burn=4000, draws=5000, n_chains=4, verbose=False, aggregate_week=False):
     
-    cases_per_age, hospitalized_per_age = load_data_ages(region, start_date, end_date)
+    cases_per_age, hospitalized_per_age = load_data_ages(region, start_date, end_date, aggregate_week=aggregate_week)
 
     pH = []
     admissions_lambda = {}

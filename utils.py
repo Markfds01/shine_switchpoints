@@ -7,7 +7,7 @@ def load_data(region, start_date, end_date, aggregate_week=False, deaths=False):
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
 
-    if len(region) == 2 or region == 'Spain': # Spanish provinces
+    if len(region) == 2 or region == 'Spain': #Spanish provinces
         cases, hospitalized = load_spanish(region, start_date, end_date, aggregate_week, deaths)
     else: # European countries
         cases, hospitalized = load_owid(region, start_date, end_date,  aggregate_week, deaths)
@@ -39,7 +39,8 @@ def load_spanish(region, start_date, end_date, aggregate_week, deaths):
     # Extract values
     data = data.loc[start_date:end_date]
     if aggregate_week:
-        data = data.groupby(pd.Grouper(freq='W-MON'))[['num_casos', 'num_hosp', 'num_def']].sum()
+            data['num_casos'] = data['num_casos'].rolling(window=7, min_periods=1).mean()
+            data['num_hosp'] = data['num_hosp'].rolling(window=7, min_periods=1).mean()
 
     cases = data['num_casos']
     if not deaths:

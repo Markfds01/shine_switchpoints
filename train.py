@@ -12,9 +12,11 @@ from model_daily import daily_admissions_model, daily_switchpoints_model
 
 
 def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
-                      burn=4000, draws=5000, n_chains=4, verbose=False):
+                      burn=4000, draws=5000, n_chains=4, verbose=False, aggregate_week = False):
+    if aggregate_week:
+        print('LO DETECTA')
     
-    cases, hospitalized = load_data(region, start_date, end_date)
+    cases, hospitalized = load_data(region, start_date, end_date, aggregate_week=aggregate_week)
     
 
     with daily_admissions_model(cases, hospitalized) as model:
@@ -48,11 +50,11 @@ def train_daily_model(region, start_date='2020-06-29', end_date='2020-12-01',
 
 def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-01',
                                 end_date='2022-03-27', burn=4000, draws=5000, n_chains=4,
-                                verbose=False, n_switchpoints=1, estimate_sw = False):
+                                verbose=False, n_switchpoints=1, estimate_sw = False, aggregate_week = False):
     if region == 'Italy':
         start_date = '2020-09-01'
     print('HE ENTRADO AL PROGRAMA')
-    cases, hospitalized = load_data(region, start_date, end_date)
+    cases, hospitalized = load_data(region, start_date, end_date, aggregate_week=aggregate_week)
     print('\n HE CARGADO LOS DATOS')
     if not estimate_sw:
         dict_init_values = {
@@ -83,13 +85,21 @@ def estimate_daily_switchpoints(region, admissions_lambda, start_date='2020-07-0
                 'hospitalized': idata.observed_data['admissions'].to_numpy()
             }
 
-            plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, estimate_sw=estimate_sw)
+            plot_daily_switchpoints(data, start_date, end_date, idata, n_switchpoints, region, estimate_sw=estimate_sw, aggregate_week=aggregate_week)
     if not estimate_sw:
-        with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
-            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+        if not aggregate_week:
+            with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
+                pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+        else:
+            with open(f'results/fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle_aw', 'wb') as file:
+                pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
     else:
-        with open(f'results/non_fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
-            pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+        if not aggregate_week:
+            with open(f'results/non_fixed_switchpoints_daily_{n_switchpoints}_{region}.pickle', 'wb') as file:
+                pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
+        else:
+            with open(f'results/non_fixed_switchpoints_daily_{n_switchpoints}_{region}_aw.pickle', 'wb') as file:
+                pickle.dump(idata, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 def estimate_weekly_switchpoints(region, start_date='2020-07-01', end_date='2022-03-27',
                                  burn=2000, draws=5000, n_chains=4, verbose=False,
