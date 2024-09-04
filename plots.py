@@ -41,7 +41,7 @@ def plot_daily_pH_training(data, start_date, end_date,region = None, edad = None
 def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,region = None, edad = None, estimate_sw = False):
     print('\n Im plotting switchpoints')
     posterior_quantile = np.percentile(data['admissions'], [2.5, 25, 50, 75, 97.5], axis=1)
-    wave_labels = ['Before 2º wave', '2º wave', '3º wave', '4º wave']
+    wave_labels = ['Before 2º wave', '2º wave', '3º wave', '4º wave', '5º wave']
 
 
     dates = pd.date_range(start_date, end_date).strftime('%y-%m-%d')
@@ -65,7 +65,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
 
     # Switchpoints with CI
     if not estimate_sw:
-        switchpoints = np.array([164, 257, 354])  # Fixed switchpoints
+        switchpoints = np.array([164, 257, 354, 469])  # Fixed switchpoints
 
         for idx in range(n_switchpoints):
             x_position = dates[int(switchpoints[idx])]

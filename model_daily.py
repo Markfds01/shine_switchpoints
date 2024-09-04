@@ -57,7 +57,7 @@ def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_sw
 
         points = np.arange(0, len(cases))
         if not estimate_sw:
-            switchpoints = np.array([164, 257, 354])  # Fixed switchpoints
+            switchpoints = np.array([164, 257, 354, 469])  # Fixed switchpoints
             n_switchpoints = len(switchpoints)
         else:
             switchpoints = pm.Uniform('switchpoint', lower=30, upper=len(points), shape=(n_switchpoints,),
