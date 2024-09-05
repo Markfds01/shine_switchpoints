@@ -65,8 +65,8 @@ def load_CT_ages(start_date, end_date, aggregate_week, deaths):
 
     # Extract values
     if aggregate_week:
-        data['num_casos'] = data['num_casos'].rolling(window=7, min_periods=1).mean()
-        data['num_hosp'] = data['num_hosp'].rolling(window=7, min_periods=1).mean()
+        data['num_casos'] = data.groupby('grupo_edad')['num_casos'].rolling(window=7, min_periods=1).mean().reset_index(level=0, drop=True)
+        data['num_hosp'] = data.groupby('grupo_edad')['num_hosp'].rolling(window=7, min_periods=1).mean().reset_index(level=0, drop=True)
     data = data.reset_index()
     cases_per_age = data[['num_casos', 'grupo_edad']] 
 
