@@ -34,12 +34,12 @@ def load_spanish_ages(region, start_date, end_date, aggregate_week, deaths):
     data = data[data.provincia_iso.isin(provinces)]
     data['fecha'] = pd.to_datetime(data['fecha'])
     data = data.groupby(['fecha','grupo_edad']).sum(['num_casos', 'num_hosp', 'num_def'])
-
+    
     # Extract values
     data = data.loc[start_date:end_date]
     if aggregate_week:
-        data['num_casos'] = data['num_casos'].rolling(window=7, min_periods=1).mean()
-        data['num_hosp'] = data['num_hosp'].rolling(window=7, min_periods=1).mean()
+        data['num_casos'] = data.groupby('grupo_edad')['num_casos'].rolling(window=7, min_periods=1).mean().reset_index(level=0, drop=True)
+        data['num_hosp'] = data.groupby('grupo_edad')['num_hosp'].rolling(window=7, min_periods=1).mean().reset_index(level=0, drop=True)
     data = data.reset_index()
     cases_per_age = data[['num_casos', 'grupo_edad']]
     if not deaths:

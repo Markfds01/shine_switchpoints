@@ -18,5 +18,5 @@ declare -a array_deaths=("CM" )
 for region in "${array_deaths[@]}"
 do
     echo "Running 2 switchpoint death estimation for $region...\n\n"
-    python3 main.py -r $region -ns 4 -aw -ag
+    python3 main.py -r $region -ns 4 -ag -aw
 done
