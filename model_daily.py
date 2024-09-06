@@ -4,6 +4,7 @@ import pytensor
 
 
 def daily_admissions_model(cases, observed_admissions):
+    
 
     delay_matrix_0 = make_delay_matrix(len(cases), len(cases), 0)
 
@@ -12,12 +13,14 @@ def daily_admissions_model(cases, observed_admissions):
         ph = pm.Uniform(name='pH', lower=0, upper=1)
         admissions_lambda = pm.Uniform(name='admissions_lambda', lower=0.1, upper=20)
         sigma = pm.Uniform(name='sigma', lower=1, upper=100)
+        
 
         # trainning
         new_hospitalized = ph * cases
         admissions = delay_cases(new_hospitalized, admissions_lambda, delay_matrix_0)
-        pm.NegativeBinomial(name='admissions', mu=admissions, alpha=sigma,
+        pm.Normal(name='admissions', mu=admissions, sigma=sigma,
                             observed=observed_admissions)
+        print(f'observed es \n {observed_admissions}')
 
     return model
 
@@ -73,7 +76,7 @@ def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_sw
         # trainning
         new_hospitalized = rate * cases
         admissions = delay_cases(new_hospitalized, admissions_lambda, delay_matrix_0)
-        pm.NegativeBinomial(name='admissions', mu=admissions, alpha=sigma,
+        pm.Normal(name='admissions', mu=admissions, sigma=sigma,
                             observed=observed_admissions)
 
     return model

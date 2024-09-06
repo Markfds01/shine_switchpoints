@@ -29,8 +29,9 @@ def train_daily_model_ages(region, start_date='2020-06-29', end_date='2020-12-01
             cases = cases_edad['num_casos']
 
             hospitalized_edad = hospitalized_per_age[hospitalized_per_age['grupo_edad']==edad]
-            hospitalized = hospitalized_edad['num_hosp']
+            hospitalized = hospitalized_edad['num_hosp'].astype('float')
             print(f' numero maximo de hospitalizados es {hospitalized.max()}')
+            #print(hospitalized)
 
             
 
@@ -38,11 +39,12 @@ def train_daily_model_ages(region, start_date='2020-06-29', end_date='2020-12-01
                 # Sample from the posterior
                 idata = pm.sample(draws=draws, tune=burn, chains=n_chains, 
                                 return_inferencedata=True, target_accept=0.95, idata_kwargs={"log_likelihood": True})
+                print(idata.observed_data['admissions'])
                 
                 # Generate posterior predictive samples
                 idata.extend(pm.sample_posterior_predictive(idata))
                 print(f'data keys are : {idata.posterior_predictive.data_vars}')
-
+                
 
                 if verbose:
                     az.summary(idata)

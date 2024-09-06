@@ -58,7 +58,7 @@ def plot_daily_switchpoints(data, start_date, end_date, trace, n_switchpoints,re
         dates, posterior_quantile[0, :], posterior_quantile[4, :],
         color='#68C5DB', label='95% quantile', alpha=.2
     )
-
+    print(data['hospitalized'])
     plt.plot(
         dates, data['hospitalized'], '.', color = '#02182B',
         alpha=0.6, markersize=4, label='Observed admissions')

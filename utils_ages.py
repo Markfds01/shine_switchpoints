@@ -39,11 +39,13 @@ def load_spanish_ages(region, start_date, end_date, aggregate_week, deaths):
     data = data.loc[start_date:end_date]
     if aggregate_week:
         data['num_casos'] = data.groupby('grupo_edad')['num_casos'].rolling(window=7, min_periods=1).mean().reset_index(level=0, drop=True)
+        data['num_casos_avg'] = data.groupby('grupo_edad')['num_casos'].rolling(window=7, min_periods=1).mean().reset_index(level=0, drop=True)
+
         data['num_hosp'] = data.groupby('grupo_edad')['num_hosp'].rolling(window=7, min_periods=1).mean().reset_index(level=0, drop=True)
     data = data.reset_index()
     cases_per_age = data[['num_casos', 'grupo_edad']]
     if not deaths:
-        pred = data[['num_hosp','grupo_edad']]
+        pred = data[['num_hosp','grupo_edad','fecha']]
     else:
         pred = data[['num_def','grupo_edad']]
 
