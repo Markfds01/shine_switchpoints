@@ -18,7 +18,7 @@ def daily_admissions_model(cases, observed_admissions):
         # trainning
         new_hospitalized = ph * cases
         admissions = delay_cases(new_hospitalized, admissions_lambda, delay_matrix_0)
-        pm.Normal(name='admissions', mu=admissions, sigma=sigma,
+        pm.NegativeBinomial(name='admissions', mu=admissions, alpha=sigma,
                             observed=observed_admissions)
         print(f'observed es \n {observed_admissions}')
 
@@ -76,7 +76,7 @@ def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_sw
         # trainning
         new_hospitalized = rate * cases
         admissions = delay_cases(new_hospitalized, admissions_lambda, delay_matrix_0)
-        pm.Normal(name='admissions', mu=admissions, sigma=sigma,
+        pm.NegativeBinomial(name='admissions', mu=admissions, alpha=sigma,
                             observed=observed_admissions)
 
     return model
