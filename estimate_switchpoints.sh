@@ -13,10 +13,10 @@
 #done
 
 # Run death estimation
-declare -a array_deaths=("MD" )
+declare -a array_deaths=("Spain" )
 
 for region in "${array_deaths[@]}"
 do
     echo "Running 2 switchpoint death estimation for $region...\n\n"
-    python3 main.py -r $region -ns 4 -ag -aw
+    python3 main.py -r $region -ns 2 -ag -aw -sw
 done
