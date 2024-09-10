@@ -64,19 +64,8 @@ def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_sw
             n_switchpoints = len(switchpoints)
         else:
             # Parameters for the first switchpoint (around 350)
-            mu_value_1 = 350
-            sigma_value_1 = 20  # Adjust this based on how much spread you want around 350
-
-            # Parameters for the second switchpoint (around 450)
-            mu_value_2 = 450
-            sigma_value_2 = 20  # Adjust this based on how much spread you want around 450
-
-            # Modeling two switchpoints with Normal distributions
-            switchpoints = pm.Normal('switchpoints', 
-                                    mu=[mu_value_1, mu_value_2],  # Different means for each switchpoint
-                                    sigma=[sigma_value_1, sigma_value_2],  # Different standard deviations for each
-                                    shape=(n_switchpoints,),  # Two switchpoints
-                                    transform=pm.distributions.transforms.Ordered())
+            switchpoints = pm.Normal('switchpoint', mu = 400,  sigma = 20, shape=(n_switchpoints,),
+                                  transform=pm.distributions.transforms.Ordered())
                         
         rates = pm.Gamma('rate', alpha=7.5, beta=1.0, shape=(n_switchpoints+1,),
                           transform=pm.distributions.transforms.Ordered())
