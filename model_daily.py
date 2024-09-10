@@ -64,7 +64,7 @@ def daily_switchpoints_model(cases, observed_admissions, admissions_lambda, n_sw
             n_switchpoints = len(switchpoints)
         else:
             # Parameters for the first switchpoint (around 350)
-            switchpoints = pm.Normal('switchpoint', mu = 400,  sigma = 20, shape=(n_switchpoints,),
+            switchpoints = pm.Normal('switchpoint', mu = [350, 450],  sigma = [20, 20], shape=(n_switchpoints,),
                                   transform=pm.distributions.transforms.Ordered())
                         
         rates = pm.Gamma('rate', alpha=7.5, beta=1.0, shape=(n_switchpoints+1,),
